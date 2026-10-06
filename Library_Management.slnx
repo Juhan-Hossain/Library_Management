@@ -1,1 +1,18 @@
-<Solution />
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/LibraryManagement.Domain/LibraryManagement.Domain.csproj" />
+    <Project Path="src/LibraryManagement.Application/LibraryManagement.Application.csproj" />
+    <Project Path="src/LibraryManagement.Infrastructure/LibraryManagement.Infrastructure.csproj" />
+    <Project Path="src/LibraryManagement.Api/LibraryManagement.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LibraryManagement.Domain.UnitTests/LibraryManagement.Domain.UnitTests.csproj" />
+    <Project Path="tests/LibraryManagement.Application.UnitTests/LibraryManagement.Application.UnitTests.csproj" />
+    <Project Path="tests/LibraryManagement.Api.IntegrationTests/LibraryManagement.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
