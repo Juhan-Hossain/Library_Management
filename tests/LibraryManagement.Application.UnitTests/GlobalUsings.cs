@@ -1,0 +1,11 @@
+﻿global using FluentValidation;
+global using LibraryManagement.Application.Common.Exceptions;
+global using LibraryManagement.Application.Common.Interfaces;
+global using LibraryManagement.Domain.Common;
+global using LibraryManagement.Domain.Entities;
+global using LibraryManagement.Domain.Enums;
+global using LibraryManagement.Domain.Services;
+global using LibraryManagement.Domain.ValueObjects;
+global using MediatR;
+global using Microsoft.Extensions.Time.Testing;
+global using NSubstitute;
