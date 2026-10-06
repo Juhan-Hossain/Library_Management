@@ -19,7 +19,6 @@ public sealed class LibraryDbContext(DbContextOptions<LibraryDbContext> options)
     IQueryable<Member> IReadDbContext.Members => Members.AsNoTracking();
     IQueryable<Loan> IReadDbContext.Loans => Loans.AsNoTracking();
 
-    // Write side (CQRS commands): translate persistence failures into application exceptions.
     async Task<int> IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken)
     {
         try
@@ -39,10 +38,6 @@ public sealed class LibraryDbContext(DbContextOptions<LibraryDbContext> options)
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
 
-    private static bool IsUniqueConstraintViolation(DbUpdateException ex) => ex.InnerException switch
-    {
-        SqlException sql => sql.Number is 2601 or 2627,
-        { } inner => inner.Message.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase),
-        _ => false
-    };
+    private static bool IsUniqueConstraintViolation(DbUpdateException ex) =>
+        ex.InnerException is SqlException { Number: 2601 or 2627 };
 }
