@@ -50,7 +50,7 @@ public sealed class MemberCommandHandlerTests
     {
         var member = TestData.NewMember(Guid.NewGuid());
         _members.GetByIdAsync(member.Id, Arg.Any<CancellationToken>()).Returns(member);
-        var handler = new UpdateMemberCommandHandler(_members, _libraries, _unitOfWork);
+        var handler = new UpdateMemberCommandHandler(_members, _libraries, _loans, _unitOfWork);
 
         await handler.Handle(
             new UpdateMemberCommand(member.Id, "Augusta", "King", "ada@example.com", "555-0101", member.LibraryId),
@@ -86,5 +86,21 @@ public sealed class MemberCommandHandlerTests
 
         member.IsActive.Should().BeFalse();
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Moving_library_with_active_loans_throws_conflict()
+    {
+        var member = TestData.NewMember(Guid.NewGuid());
+        _members.GetByIdAsync(member.Id, Arg.Any<CancellationToken>()).Returns(member);
+        _loans.HasActiveLoansForMemberAsync(member.Id, Arg.Any<CancellationToken>()).Returns(true);
+        var handler = new UpdateMemberCommandHandler(_members, _libraries, _loans, _unitOfWork);
+
+        var act = () => handler.Handle(
+            new UpdateMemberCommand(member.Id, "Ada", "Lovelace", "ada@example.com", null, Guid.NewGuid()),
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ConflictException>();
+        await _unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

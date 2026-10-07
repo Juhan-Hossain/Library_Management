@@ -45,7 +45,8 @@ public sealed class BookCommandHandlerTests
     [Fact]
     public async Task Create_with_duplicate_isbn_throws_conflict()
     {
-        _books.IsbnExistsAsync(Arg.Any<Isbn>(), Arg.Any<Guid?>(), Arg.Any<CancellationToken>()).Returns(true);
+        _books.IsbnExistsAsync(Arg.Any<Guid>(), Arg.Any<Isbn>(), Arg.Any<Guid?>(), Arg.Any<CancellationToken>()).Returns(true);
+
         var handler = new CreateBookCommandHandler(_books, _libraries, _authors, _unitOfWork);
 
         var act = () => handler.Handle(NewCommand(), CancellationToken.None);
@@ -65,7 +66,7 @@ public sealed class BookCommandHandlerTests
             new UpdateBookCommand(book.Id, "Clean Code (2nd ed.)", "9780132350884", 2009, "Software", 3, book.LibraryId, book.AuthorId),
             CancellationToken.None);
 
-        await _books.Received(1).IsbnExistsAsync(Arg.Any<Isbn>(), book.Id, Arg.Any<CancellationToken>());
+        await _books.Received(1).IsbnExistsAsync(book.LibraryId, Arg.Any<Isbn>(), book.Id, Arg.Any<CancellationToken>());
         book.Title.Should().Be("Clean Code (2nd ed.)");
         book.TotalCopies.Should().Be(3);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());

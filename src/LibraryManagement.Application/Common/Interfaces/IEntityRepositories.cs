@@ -12,7 +12,7 @@ public interface IAuthorRepository : IRepository<Author>
 
 public interface IBookRepository : IRepository<Book>
 {
-    Task<bool> IsbnExistsAsync(Isbn isbn, Guid? excludingBookId, CancellationToken cancellationToken);
+    Task<bool> IsbnExistsAsync(Guid libraryId, Isbn isbn, Guid? excludingBookId, CancellationToken cancellationToken);
 }
 
 public interface IMemberRepository : IRepository<Member>

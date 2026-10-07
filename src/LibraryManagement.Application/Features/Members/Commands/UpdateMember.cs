@@ -20,12 +20,17 @@ public sealed class UpdateMemberCommandValidator : AbstractValidator<UpdateMembe
 public sealed class UpdateMemberCommandHandler(
     IMemberRepository members,
     ILibraryRepository libraries,
+    ILoanRepository loans,
     IUnitOfWork unitOfWork) : IRequestHandler<UpdateMemberCommand>
 {
     public async Task Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
         var member = await members.GetRequiredAsync(request.Id, cancellationToken);
         await libraries.EnsureExistsAsync(request.LibraryId, cancellationToken);
+
+        if (request.LibraryId != member.LibraryId &&
+            await loans.HasActiveLoansForMemberAsync(member.Id, cancellationToken))
+            throw new ConflictException("A member cannot move to another library while they have active loans.");
 
         var email = Email.Create(request.Email);
         if (await members.EmailExistsAsync(email, excludingMemberId: member.Id, cancellationToken))

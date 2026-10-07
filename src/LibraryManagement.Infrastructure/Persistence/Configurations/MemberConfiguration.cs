@@ -23,5 +23,6 @@ internal sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
         builder.HasOne(m => m.Library).WithMany().HasForeignKey(m => m.LibraryId).OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(m => new { m.LastName, m.FirstName });
+        builder.Property(m => m.Version).IsConcurrencyToken();
     }
 }

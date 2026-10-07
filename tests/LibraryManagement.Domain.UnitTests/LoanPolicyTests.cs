@@ -121,4 +121,15 @@ public sealed class LoanPolicyTests
         LoanPolicy.Return(loan, book, Now.AddDays(20));
         loan.IsOverdue(Now.AddDays(30)).Should().BeFalse();
     }
+
+    [Fact]
+    public void Borrow_changes_member_version_to_guard_the_loan_limit()
+    {
+        var member = DomainFakes.NewMember();
+        var version = member.Version;
+
+        LoanPolicy.Borrow(DomainFakes.NewBook(), member, 0, false, Now);
+
+        member.Version.Should().NotBe(version);
+    }
 }

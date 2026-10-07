@@ -22,7 +22,8 @@ internal sealed class BookConfiguration : IEntityTypeConfiguration<Book>
             .HasMaxLength(Isbn.MaxLength)
             .IsUnicode(false)
             .IsRequired();
-        builder.HasIndex(b => b.Isbn).IsUnique();
+        builder.HasIndex(b => new { b.LibraryId, b.Isbn }).IsUnique();
+        builder.HasIndex(b => b.Isbn);
 
         // Optimistic concurrency: UPDATE ... WHERE Version = @original.
         builder.Property(b => b.Version).IsConcurrencyToken();

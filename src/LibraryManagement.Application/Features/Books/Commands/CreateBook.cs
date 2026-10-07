@@ -26,8 +26,8 @@ public sealed class CreateBookCommandHandler(
         await authors.EnsureExistsAsync(request.AuthorId, cancellationToken);
 
         var isbn = Isbn.Create(request.Isbn);
-        if (await books.IsbnExistsAsync(isbn, excludingBookId: null, cancellationToken))
-            throw new ConflictException($"A book with ISBN '{isbn}' already exists.");
+        if (await books.IsbnExistsAsync(request.LibraryId, isbn, excludingBookId: null, cancellationToken))
+            throw new ConflictException($"This library already has a book with ISBN '{isbn}'.");
 
         var book = Book.Create(request.Title, isbn, request.PublishedYear, request.Genre,
             request.TotalCopies, request.LibraryId, request.AuthorId);

@@ -24,6 +24,7 @@ public static class LoanPolicy
             throw new BusinessRuleViolationException("The member already has an active loan for this book.");
 
         book.CheckOut();
+        member.RecordBorrowing();
         return Loan.Start(book.Id, member.Id, utcNow, LoanPeriod);
     }
 

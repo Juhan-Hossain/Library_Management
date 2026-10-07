@@ -17,16 +17,17 @@ public sealed class Member : AuditableEntity
     public DateOnly MembershipDate { get; private set; }
     public bool IsActive { get; private set; }
     public Guid LibraryId { get; private set; }
-
+    public Guid Version { get; private set; }
     public Library? Library { get; private set; }
 
     public static Member Create(string firstName, string lastName, Email email, string? phone,
         Guid libraryId, DateOnly membershipDate)
     {
-        var member = new Member { MembershipDate = membershipDate, IsActive = true };
+        var member = new Member { MembershipDate = membershipDate, IsActive = true, Version = Guid.NewGuid() };
         member.Update(firstName, lastName, email, phone, libraryId);
         return member;
     }
+    internal void RecordBorrowing() => Version = Guid.NewGuid();
 
     public void Update(string firstName, string lastName, Email email, string? phone, Guid libraryId)
     {
